@@ -1,62 +1,61 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; // Required for scene management
-using UnityEngine.UI; // Required for UI elements like Button (if needed)
+using UnityEngine.UI; // Required for UI components if doing this via code
+using System.Collections;
 
-public class PauseMenu : MonoBehaviour
+public class PauseManager : MonoBehaviour
 {
-    public GameObject pauseMenuUI; // Reference to the PauseMenuPanel
-    public static bool isGamePaused = false; // Static variable to track the pause state
+    // A reference to your Pause Menu UI Panel (optional, but useful)
+    public GameObject pauseMenuUI; 
+    
+    // A boolean to keep track of the game state
+    public static bool GameIsPaused = false;
 
     void Start()
     {
-        // Ensure the menu is hidden when the game starts
+        // Ensure the pause menu is hidden when the game starts
         if (pauseMenuUI != null)
         {
             pauseMenuUI.SetActive(false);
         }
-        // Ensure time scale is normal
-        Time.timeScale = 1f;
-        isGamePaused = false;
+        ResumeGame(); // Start unpaused
     }
 
-    void Update()
+    // This function can be called by the Button's OnClick event
+    public void TogglePauseGame()
     {
-        // Check if the pause key (e.g., Escape) is pressed
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (GameIsPaused)
         {
-            if (isGamePaused)
-            {
-                Resume();
-            }
-            else
-            {
-                Pause();
-            }
+            ResumeGame();
+        }
+        else
+        {
+            PauseGame();
         }
     }
 
-    // Public function to resume the game
-    public void Resume()
+    public void ResumeGame()
     {
-        pauseMenuUI.SetActive(false); // Hide the pause menu UI
-        Time.timeScale = 1f; // Resume normal game time
-        isGamePaused = false;
-        // You can also unpause the AudioListener if needed: AudioListener.pause = false;
+        if (pauseMenuUI != null)
+        {
+            pauseMenuUI.SetActive(false);
+        }
+        Time.timeScale = 1f; // Resumes the game
+        GameIsPaused = false;
+        // Optional: unlock and hide cursor if it was locked
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
-    // Public function to pause the game
-    public void Pause()
+    public void PauseGame()
     {
-        pauseMenuUI.SetActive(true); // Show the pause menu UI
-        Time.timeScale = 0f; // Stop all time-based operations and physics
-        isGamePaused = true;
-        // You can also pause the AudioListener if needed: AudioListener.pause = true;
-    }
-
-   
-    // Public function to quit the game
-    public void QuitGame()
-    {
-        Application.Quit(); // Quits the application (works in builds, not in the editor)
+        if (pauseMenuUI != null)
+        {
+            pauseMenuUI.SetActive(true);
+        }
+        Time.timeScale = 0f; // Pauses the game
+        GameIsPaused = true;
+        // Optional: show and unlock cursor so the user can click menu buttons
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 }
