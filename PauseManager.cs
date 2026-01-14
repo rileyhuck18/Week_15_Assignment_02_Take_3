@@ -58,4 +58,9 @@ public class PauseManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
+  // Public function to quit the game
+    public void QuitGame()
+    {
+        Application.Quit(); // Quits the application (works in builds, not in the editor)
+    }
 }
